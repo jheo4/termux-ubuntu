@@ -1,10 +1,13 @@
 #!/data/data/com.termux/files/usr/bin/bash
 folder=ubuntu-fs
+
 if [ -d "$folder" ]; then
 	first=1
 	echo "skipping downloading"
 fi
+
 tarball="ubuntu.tar.gz"
+core="bionic"
 if [ "$first" != 1 ];then
 	if [ ! -f $tarball ]; then
 		echo "downloading ubuntu-image"
@@ -22,7 +25,7 @@ if [ "$first" != 1 ];then
 		*)
 			echo "unknown architecture"; exit 1 ;;
 		esac
-		wget "https://partner-images.canonical.com/core/disco/current/ubuntu-disco-core-cloudimg-${archurl}-root.tar.gz" -O $tarball
+		wget "https://partner-images.canonical.com/core/${core}/current/ubuntu-{$core}-core-cloudimg-${archurl}-root.tar.gz" -O $tarball
 	fi
 	cur=`pwd`
 	mkdir -p "$folder"
@@ -33,6 +36,7 @@ if [ "$first" != 1 ];then
 	echo "nameserver 1.1.1.1" > etc/resolv.conf
 	cd "$cur"
 fi
+
 mkdir -p binds
 bin=start-ubuntu.sh
 echo "writing launch script"
@@ -53,9 +57,9 @@ fi
 command+=" -b /dev"
 command+=" -b /proc"
 ## uncomment the following line to have access to the home directory of termux
-#command+=" -b /data/data/com.termux/files/home:/root"
-## uncomment the following line to mount /sdcard directly to / 
-#command+=" -b /sdcard"
+command+=" -b /data/data/com.termux/files/home:/root"
+## uncomment the following line to mount /sdcard directly to /
+command+=" -b /sdcard"
 command+=" -w /root"
 command+=" /usr/bin/env -i"
 command+=" HOME=/root"
